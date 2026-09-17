@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // weeks/<Monday's date> holds weekly checkmarks; days/<date> holds daily ones.
+    match /{kind}/{date} {
+      allow read: if kind in ['weeks', 'days'];
+      allow create, update: if kind in ['weeks', 'days']
+        && date.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.keys().hasOnly(['done'])
+        && request.resource.data.done is map
+        && request.resource.data.done.size() <= 20
+        && request.resource.data.done.values().hasOnly([true, false]);
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FDF7F9">
+<title>Tekk House Chores</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #FDF7F9;
+    --surface: #FFFFFF;
+    --ink: #4A3A45;
+    --muted: #7F6D78;
+    --line: #F2E3EA;
+    --accent: #E9A3C1;
+    --accent-ink: #B8628A;
+    --accent-soft: #FCEBF2;
+    --done: #A8D29B;
+    --done-soft: #E6F3E0;
+    --done-ink: #4F7A45;
+    --leaf: #C3E2B5;
+    --ring: #EBCBD9;
+    --center: #F8DC85;
+    --warn-bg: #FFF6E3;
+    --warn-ink: #8A6420;
+    --p0: #F4A6BF; --p1: #C1B0F2; --p2: #F6D27A; --p3: #A6CAF2; --p4: #F8BD95;
+    --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #221B1F; --surface: #2C2329; --ink: #F3E8EE; --muted: #BCA9B4; --line: #3E333A; --ring: #5E4C57;
+      --accent: #F2B3CD; --accent-ink: #F2B3CD; --accent-soft: #3A2B34;
+      --done: #B5DBA8; --done-soft: #2F3A2B; --done-ink: #BFE3B2; --leaf: #93C382; --center: #F2D685;
+      --warn-bg: #3A2F18; --warn-ink: #F2D08A;
+      --p0: #F5B8CB; --p1: #CCBEF5; --p2: #F5DC95; --p3: #B8D6F5; --p4: #F7C8A6;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #221B1F; --surface: #2C2329; --ink: #F3E8EE; --muted: #BCA9B4; --line: #3E333A; --ring: #5E4C57;
+    --accent: #F2B3CD; --accent-ink: #F2B3CD; --accent-soft: #3A2B34;
+    --done: #B5DBA8; --done-soft: #2F3A2B; --done-ink: #BFE3B2; --leaf: #93C382; --center: #F2D685;
+    --warn-bg: #3A2F18; --warn-ink: #F2D08A;
+    --p0: #F5B8CB; --p1: #CCBEF5; --p2: #F5DC95; --p3: #B8D6F5; --p4: #F7C8A6;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--body);
+    font-size: 15px; line-height: 1.5; margin: 0;
+    padding: 0 16px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding-block: 28px 56px; display: grid; gap: 36px; }
+
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(32px, 5.5vw, 50px); line-height: 1; margin: 0; letter-spacing: -0.02em; text-wrap: balance; }
+  h1 em { font-style: italic; font-weight: 600; color: var(--accent-ink); }
+  .garden { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+  .garden li { display: flex; align-items: center; gap: 5px; }
+  .garden b { color: var(--ink); }
+  .sub { color: var(--muted); margin: 6px 0 0; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+  .me { display: flex; align-items: center; gap: 10px; }
+  .me label { white-space: nowrap; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+  select {
+    font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 32px 8px 12px; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%; background-size: 5px 5px; background-repeat: no-repeat;
+  }
+  :focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+
+  .notice { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 14px; font-size: 14px; }
+
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .stat { border-top: 2px dotted var(--accent); padding-top: 10px; }
+  .stat .k { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+  .stat .v { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1.1; }
+  .stat .v small { font-family: var(--body); font-weight: 400; font-size: 14px; color: var(--muted); }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--leaf), var(--accent)); border-radius: 3px; transition: width .3s ease; }
+
+  section { display: grid; gap: 14px; }
+  .sechead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+  h2 { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 25px; margin: 0; letter-spacing: -0.01em; }
+  .sechead p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* Weekly cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 22px 6px;
+    padding: 14px 14px 12px; display: grid; gap: 10px; align-content: start;
+  }
+  .card.mine { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .who { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .name { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; }
+  .fl { width: 18px; height: 18px; flex: none; }
+  .fl .pt { fill: var(--c); }
+  .fl .ct { fill: var(--center); }
+  .flname { font-size: 12px; color: var(--muted); font-weight: 400; font-style: italic; }
+  .you { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 1px 8px; }
+  .setname { font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--muted); margin: 0; }
+  .tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .check {
+    display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: start;
+    padding: 6px 4px; border-radius: 6px; cursor: pointer;
+  }
+  .check:hover { background: var(--accent-soft); }
+  .check input { margin: 1px 0 0; width: 20px; height: 20px; }
+  input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; margin: 0; cursor: pointer; flex: none;
+    border: 2px solid var(--ring); border-radius: 50%; background: var(--surface);
+    display: inline-grid; place-content: center; transition: border-color .15s, background-color .15s;
+  }
+  input[type="checkbox"]:hover { border-color: var(--accent); }
+  input[type="checkbox"]::before {
+    content: ""; width: 15px; height: 15px; background: var(--accent); transform: scale(0) rotate(-40deg); transition: transform .2s ease;
+    -webkit-mask: var(--bloom) center / contain no-repeat; mask: var(--bloom) center / contain no-repeat;
+  }
+  input[type="checkbox"]:checked { border-color: var(--accent); background: var(--accent-soft); }
+  input[type="checkbox"]:checked::before { transform: scale(1) rotate(0); }
+  .check input:disabled { cursor: not-allowed; }
+  .check .t { min-width: 0; }
+  .check.is-done .t { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--muted); }
+  .check .m { color: var(--muted); }
+  .cardfoot { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--line); padding-top: 8px; color: var(--muted); font-size: 13px; }
+  .pill { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: var(--line); color: var(--muted); }
+  .pill.ok { background: var(--done-soft); color: var(--done-ink); }
+  :root { --bloom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='5.2' r='3.8'/%3E%3Ccircle cx='14.6' cy='8.5' r='3.8'/%3E%3Ccircle cx='12.8' cy='13.9' r='3.8'/%3E%3Ccircle cx='7.2' cy='13.9' r='3.8'/%3E%3Ccircle cx='5.4' cy='8.5' r='3.8'/%3E%3C/svg%3E"); }
+
+  /* Daily grid */
+  .daily { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 22px 6px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  thead th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+  tbody th { font-weight: 700; white-space: nowrap; }
+  tr.mine { background: var(--accent-soft); }
+  td.c { text-align: center; width: 26%; }
+  thead th.c { text-align: center; }
+  td.c input { width: 26px; height: 26px; }
+  td.c input::before { width: 18px; height: 18px; }
+  td.status { width: 1%; white-space: nowrap; }
+
+  /* Rotation */
+  .rot { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 22px 6px; }
+  .rot td, .rot th { white-space: nowrap; font-size: 14px; }
+  .rot thead th.now { color: var(--accent); }
+  .rot tr.now td, .rot tr.now th { font-weight: 700; background: var(--accent-soft); }
+  .rot tr.past td, .rot tr.past th { color: var(--muted); }
+  .rot .mine { box-shadow: inset 2px 0 0 var(--accent), inset -2px 0 0 var(--accent); }
+  .rot tfoot td, .rot tfoot th { border-top: 2px solid var(--line); border-bottom: 0; font-size: 13px; color: var(--muted); }
+  .rot tbody tr:last-child td, .rot tbody tr:last-child th { border-bottom: 0; }
+  .cell-name, .pastbtn { display: none; }
+
+  /* Phones: each week becomes its own card listing who does what */
+  @media (max-width: 640px) {
+    .rot { background: transparent; border: 0; border-radius: 0; overflow: visible; }
+    .rot table { min-width: 0; }
+    .rot thead { display: none; }
+    .rot table, .rot tbody, .rot tfoot, .rot tr, .rot th, .rot td { display: block; }
+    .rot tbody { display: grid; gap: 10px; }
+    .rot tr { background: var(--surface); border: 1px solid var(--line); border-radius: 18px 18px 18px 6px; padding: 8px 0; }
+    .rot tbody tr.past { display: none; }
+    .rot.show-past tbody tr.past { display: block; }
+    .rot tr.now { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+    .rot tr.now td, .rot tr.now th { background: transparent; font-weight: 400; }
+    .rot tr th[scope="row"] { border: 0; padding: 2px 14px 6px; font-size: 13px; color: var(--muted); white-space: normal; }
+    .rot tr.now th[scope="row"] { color: var(--accent-ink); font-weight: 700; }
+    .rot tr td { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 0; padding: 5px 14px; white-space: normal; text-align: right; font-size: 14px; }
+    .rot tr td.mine { box-shadow: none; background: var(--accent-soft); font-weight: 700; margin: 0 6px; padding-inline: 8px; border-radius: 8px; }
+    .cell-name { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--ink); text-align: left; }
+    .rot tfoot { margin-top: 10px; }
+    .rot tfoot td, .rot tfoot th { border-top: 0; }
+    .pastbtn {
+      display: block; justify-self: start; font: inherit; font-size: 14px; color: var(--accent-ink); background: none;
+      border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer;
+    }
+  }
+  .remind { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px 16px; display: grid; gap: 2px; }
+  .remind strong { font-family: var(--display); font-weight: 600; font-size: 18px; }
+  .remind span { color: var(--muted); font-size: 14px; }
+  .remind.urgent { background: var(--warn-bg); border-left-color: var(--p2); }
+  .remind.urgent strong, .remind.urgent span { color: var(--warn-ink); }
+  footer { color: var(--muted); font-size: 13px; }
+
+  @media (prefers-reduced-motion: reduce) { .bar i, input[type="checkbox"]::before { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Tekk House <em>Chores</em></h1>
+      <p class="sub" id="weekline">Loading this week…</p>
+      <ul class="garden" id="garden" aria-label="Roommate flowers"></ul>
+    </div>
+    <div class="me">
+      <label for="me-select">Viewing as</label>
+      <select id="me-select">
+        <option value="">Choose your name</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+  <div class="remind" id="remind" role="status"><strong id="remind-title">Pick your name to see what's left for you</strong><span id="remind-body">Use "Viewing as" in the top right.</span></div>
+
+  <div class="summary">
+    <div class="stat">
+      <div class="k">Today</div>
+      <div class="v" id="sum-day">0 <small>of 10 done</small></div>
+      <div class="bar"><i id="bar-day"></i></div>
+    </div>
+    <div class="stat">
+      <div class="k">This week</div>
+      <div class="v" id="sum-week">0 <small>of 9 chores done</small></div>
+      <div class="bar"><i id="bar-week"></i></div>
+    </div>
+    <div class="stat">
+      <div class="k">Rotates in</div>
+      <div class="v" id="sum-rot">– <small>days</small></div>
+      <div class="sub mono" id="sum-rot-date" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sechead">
+      <h2>Every day, everyone</h2>
+      <p id="dayline"></p>
+    </div>
+    <div class="daily">
+      <table>
+        <thead><tr><th scope="col">Roommate</th><th scope="col" class="c">Own dishes done before bed</th><th scope="col" class="c">Dry dishes put away</th><th scope="col"></th></tr></thead>
+        <tbody id="daily-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <h2>This week's chores</h2>
+      <p>Sets are 10–15 min each and rotate every Sunday night</p>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <h2>Schedule through Dec 15</h2>
+      <p>Every roommate's set for each week of the semester</p>
+    </div>
+    <div class="rot">
+      <table>
+        <thead id="rot-head"></thead>
+        <tbody id="rot-body"></tbody>
+        <tfoot id="rot-foot"></tfoot>
+      </table>
+    </div>
+    <button type="button" class="pastbtn" id="past-toggle">Show past weeks</button>
+  </section>
+
+  <footer>Every bloom you tick is shared with everyone who opens this page. Daily boxes clear at midnight; weekly boxes clear after Sunday night.</footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function () {
+  const PEOPLE = ["Pia", "Alina", "Maryam", "Naya", "Maya"];
+  const FLOWERS = ["Tulip", "Lavender", "Sunflower", "Forget-me-not", "Marigold"];
+  const flower = (i) => `<svg class="fl" viewBox="0 0 20 20" aria-hidden="true" style="--c:var(--p${i})"><circle class="pt" cx="10" cy="5.2" r="3.8"/><circle class="pt" cx="14.6" cy="8.5" r="3.8"/><circle class="pt" cx="12.8" cy="13.9" r="3.8"/><circle class="pt" cx="7.2" cy="13.9" r="3.8"/><circle class="pt" cx="5.4" cy="8.5" r="3.8"/><circle class="ct" cx="10" cy="10" r="2.6"/></svg>`;
+  const BUNDLES = [
+    { name: "Swiffer", tasks: [
+      { id: "swiffer", label: "Swiffer floors, including both staircases", min: 15 } ] },
+    { name: "Vacuum + sink", tasks: [
+      { id: "vacuum", label: "Vacuum floors, including both staircases", min: 10 },
+      { id: "sink", label: "Clean sink", min: 2 } ] },
+    { name: "Stove + microwave", tasks: [
+      { id: "stove", label: "Clean stove", min: 10 },
+      { id: "microwave", label: "Wipe down inside of microwave", min: 2 } ] },
+    { name: "Trash + counters", tasks: [
+      { id: "trash", label: "Take out trash", min: 7 },
+      { id: "counters", label: "Wipe down kitchen counters", min: 5 } ] },
+    { name: "Living area", tasks: [
+      { id: "dining", label: "Wipe down dining table and TV cabinet", min: 5 },
+      { id: "blankets", label: "Fold blankets", min: 5 } ] },
+  ];
+  const DAILY = [
+    { id: "dishes", label: "Own dishes done before bed" },
+    { id: "dry", label: "Dry dishes put away" },
+  ];
+  const DAY = 864e5;
+  const ANCHOR = Date.UTC(2026, 8, 14) / DAY; // Monday, Sep 14 2026: Pia starts on set 0 (weeks run Mon–Sun, rotating Sunday night)
+  const END = Date.UTC(2026, 11, 15) / DAY;   // Dec 15 2026: last day on the schedule
+  const LAST_WEEK = Math.floor((END - ANCHOR) / 7);
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n, opts) => new Date(n * DAY).toLocaleDateString(undefined, Object.assign({ timeZone: "UTC" }, opts));
+  const iso = (n) => new Date(n * DAY).toISOString().slice(0, 10);
+  const bundleIndex = (p, weekIdx) => (((p + weekIdx) % 5) + 5) % 5;
+
+  let db = null, readOnly = false;
+  let state = { week: {}, day: {} };
+  let cur = null; // { today, weekStart, weekIdx, wd } — wd: 0 = Monday … 6 = Sunday
+  let unsubs = [];
+  const queues = {};
+
+  let me = "";
+  try { me = localStorage.getItem("chore-me") || ""; } catch (e) {}
+
+  function computeDates() {
+    const now = new Date();
+    const today = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / DAY);
+    const wd = (now.getDay() + 6) % 7;
+    const weekStart = today - wd;
+    return { today, wd, weekStart, weekIdx: Math.floor((weekStart - ANCHOR) / 7) };
+  }
+
+  function escapeHtml(s) { return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  function build() {
+    const sel = $("me-select");
+    sel.innerHTML = '<option value="">Choose your name</option>' +
+      PEOPLE.map((p) => `<option value="${p}">${p}</option>`).join("");
+    sel.value = me;
+    $("garden").innerHTML = PEOPLE.map((p, i) => `<li>${flower(i)}<b>${p}</b> ${FLOWERS[i].toLowerCase()}</li>`).join("");
+
+    const { today, weekStart, weekIdx, wd } = cur;
+    const rotateNight = weekStart + 6;
+    $("weekline").textContent = `Week of ${fmt(weekStart, { month: "long", day: "numeric" })} – ${fmt(weekStart + 6, { month: "long", day: "numeric" })}`;
+    $("dayline").textContent = fmt(today, { weekday: "long", month: "short", day: "numeric" });
+    const left = 7 - wd;
+    $("sum-rot").innerHTML = `${left} <small>${left === 1 ? "day" : "days"}</small>`;
+    $("sum-rot-date").textContent = `Sun night, ${fmt(rotateNight, { month: "short", day: "numeric" })}`;
+
+    $("daily-body").innerHTML = PEOPLE.map((p, i) => `
+      <tr data-person="${p}">
+        <th scope="row"><span class="name">${flower(i)}${p}</span></th>
+        ${DAILY.map((d) => `<td class="c"><input type="checkbox" id="d-${p}-${d.id}" data-scope="day" data-key="${p}__${d.id}" aria-label="${p}: ${escapeHtml(d.label)}"></td>`).join("")}
+        <td class="status"><span class="pill" data-daystatus="${p}">0/2</span></td>
+      </tr>`).join("");
+
+    $("cards").innerHTML = PEOPLE.map((p, i) => {
+      const b = BUNDLES[bundleIndex(i, weekIdx)];
+      const total = b.tasks.reduce((s, t) => s + t.min, 0);
+      return `
+      <article class="card" data-person="${p}">
+        <div class="who">
+          <span class="name">${flower(i)}${p} <span class="flname">${FLOWERS[i]}</span></span>
+          <span class="you" hidden>You</span>
+        </div>
+        <p class="setname">${b.name}</p>
+        <ul class="tasks">
+          ${b.tasks.map((t) => `
+          <li><label class="check" for="w-${t.id}">
+            <input type="checkbox" id="w-${t.id}" data-scope="week" data-key="${t.id}">
+            <span class="t">${escapeHtml(t.label)}</span>
+            <span class="m mono">${t.min}m</span>
+          </label></li>`).join("")}
+        </ul>
+        <div class="cardfoot"><span class="mono">${total} min total</span><span class="pill" data-weekstatus="${p}">0/${b.tasks.length}</span></div>
+      </article>`;
+    }).join("");
+
+    const weeks = [];
+    for (let w = 0; w <= LAST_WEEK; w++) weeks.push(w);
+    $("rot-head").innerHTML = `<tr><th scope="col">Week of</th>${PEOPLE.map((p, i) =>
+      `<th scope="col" data-col="${p}"><span class="name">${flower(i)}${p}</span></th>`).join("")}</tr>`;
+    $("rot-body").innerHTML = weeks.map((w) => {
+      const cls = w === weekIdx ? "now" : w < weekIdx ? "past" : "";
+      const start = ANCHOR + w * 7;
+      return `<tr class="${cls}">
+        <th scope="row" class="mono">${fmt(start, { month: "short", day: "numeric" })}${w === weekIdx ? " · now" : ""}</th>
+        ${PEOPLE.map((p, i) => `<td data-col="${p}"><span class="cell-name">${flower(i)}${p}</span>${BUNDLES[bundleIndex(i, w)].name}</td>`).join("")}
+      </tr>`;
+    }).join("");
+    $("rot-foot").innerHTML = `<tr><th scope="row">Total by Dec 15</th>${PEOPLE.map((p, i) => {
+      const mins = weeks.reduce((sum, w) => sum + BUNDLES[bundleIndex(i, w)].tasks.reduce((a, t) => a + t.min, 0), 0);
+      return `<td data-col="${p}"><span class="cell-name">${flower(i)}${p}</span><span class="mono">${mins} min</span></td>`;
+    }).join("")}</tr>`;
+    if (weekIdx > LAST_WEEK) $("weekline").textContent += " · The schedule ended Dec 15";
+    $("past-toggle").hidden = weekIdx <= 0;
+
+    sync();
+  }
+
+  function sync() {
+    document.querySelectorAll("input[data-scope]").forEach((el) => {
+      const on = !!state[el.dataset.scope][el.dataset.key];
+      el.checked = on;
+      el.disabled = readOnly;
+      const lab = el.closest(".check");
+      if (lab) lab.classList.toggle("is-done", on);
+    });
+
+    let dayDone = 0;
+    PEOPLE.forEach((p) => {
+      const n = DAILY.filter((d) => state.day[`${p}__${d.id}`]).length;
+      dayDone += n;
+      const pill = document.querySelector(`[data-daystatus="${p}"]`);
+      pill.textContent = n === DAILY.length ? "In bloom" : `${n}/${DAILY.length}`;
+      pill.classList.toggle("ok", n === DAILY.length);
+    });
+    const dayTotal = PEOPLE.length * DAILY.length;
+    $("sum-day").innerHTML = `${dayDone} <small>of ${dayTotal} done</small>`;
+    $("bar-day").style.width = (dayDone / dayTotal * 100) + "%";
+
+    let weekDone = 0, weekTotal = 0;
+    PEOPLE.forEach((p, i) => {
+      const b = BUNDLES[bundleIndex(i, cur.weekIdx)];
+      const n = b.tasks.filter((t) => state.week[t.id]).length;
+      weekDone += n; weekTotal += b.tasks.length;
+      const pill = document.querySelector(`[data-weekstatus="${p}"]`);
+      pill.textContent = n === b.tasks.length ? "In bloom" : `${n}/${b.tasks.length}`;
+      pill.classList.toggle("ok", n === b.tasks.length);
+    });
+    $("sum-week").innerHTML = `${weekDone} <small>of ${weekTotal} chores done</small>`;
+    $("bar-week").style.width = (weekDone / weekTotal * 100) + "%";
+
+    document.querySelectorAll("[data-col]").forEach((el) => el.classList.toggle("mine", !!me && el.dataset.col === me));
+    renderReminder();
+
+    document.querySelectorAll("[data-person]").forEach((el) => {
+      const mine = !!me && el.dataset.person === me;
+      el.classList.toggle("mine", mine);
+      const tag = el.querySelector(".you");
+      if (tag) tag.hidden = !mine;
+    });
+  }
+
+  function renderReminder() {
+    const title = $("remind-title"), body = $("remind-body");
+    const pi = PEOPLE.indexOf(me);
+    $("remind").classList.remove("urgent");
+    if (pi < 0) {
+      title.textContent = "Pick your name to see what's left for you";
+      body.textContent = 'Use "Viewing as" at the top of the page.';
+      return;
+    }
+    const left = 7 - cur.wd;
+    const when = left === 1 ? "tonight (chores rotate Sunday night)" : `in ${left} days, by Sunday night`;
+    const b = BUNDLES[bundleIndex(pi, cur.weekIdx)];
+    const todo = b.tasks.filter((t) => !state.week[t.id]);
+    const dailyLeft = DAILY.filter((d) => !state.day[`${me}__${d.id}`]);
+    const dishNote = dailyLeft.length && new Date().getHours() >= 18 ? " Also tonight: " + dailyLeft.map((d) => d.label.toLowerCase()).join(", ") + "." : "";
+    if (cur.weekIdx > LAST_WEEK) {
+      title.textContent = "The chore schedule ended Dec 15";
+      body.textContent = "Ask Claude to extend it into the next term.";
+    } else if (!todo.length) {
+      title.textContent = `You're done for the week, ${me}`;
+      body.textContent = `Next week you have ${BUNDLES[bundleIndex(pi, cur.weekIdx + 1)].name}.` + dishNote;
+    } else {
+      const mins = todo.reduce((a, t) => a + t.min, 0);
+      const count = todo.length === 1 ? "1 chore" : todo.length + " chores";
+      if (cur.wd === 0) {
+        title.textContent = `New week, ${me}: you're on ${b.name} (${mins} min)`;
+      } else if (cur.wd >= 3) {
+        $("remind").classList.add("urgent");
+        title.textContent = `Reminder, ${me}: ${count} still left (${mins} min)`;
+      } else {
+        title.textContent = `${me}, you have ${count} left (${mins} min)`;
+      }
+      body.textContent = `${todo.map((t) => t.label).join(" · ")}. Due ${when}.` + dishNote;
+    }
+  }
+
+  function showNotice(msg) { const n = $("notice"); n.textContent = msg; n.hidden = !msg; }
+
+  function docFor(scope) {
+    return db.doc(scope === "week" ? "weeks/" + iso(cur.weekStart) : "days/" + iso(cur.today));
+  }
+
+  function write(scope, key, val) {
+    state[scope] = Object.assign({}, state[scope], { [key]: val });
+    sync();
+    if (!db || readOnly) return;
+    const ref = docFor(scope);
+    const body = { done: { [key]: val } };
+    queues[ref.path] = (queues[ref.path] || Promise.resolve())
+      .then(() => ref.set(body, { merge: true }))
+      .catch((e) => {
+        const code = e && e.code;
+        if (code === "permission-denied") {
+          showNotice("That checkmark was blocked by the database's security rules. Check the rules in Firebase (see README).");
+        } else if (code === "resource-exhausted") {
+          showNotice("Too many changes at once. Wait a moment, then try again.");
+        } else {
+          showNotice("That checkmark didn't save. Check your connection and try again.");
+        }
+      });
+  }
+
+  function subscribe() {
+    unsubs.forEach((u) => u()); unsubs = [];
+    if (!db) return;
+    const onErr = (e) => {
+      if (e && e.code === "permission-denied") showNotice("The database blocked reading checkmarks. Check the security rules in Firebase (see README).");
+      else showNotice("Live updates stopped. Reload the page to reconnect.");
+    };
+    [["week", docFor("week")], ["day", docFor("day")]].forEach(([scope, ref]) => {
+      unsubs.push(ref.onSnapshot((snap) => {
+        const d = snap.exists ? snap.data() : null;
+        state[scope] = (d && d.done) || {};
+        sync();
+      }, onErr));
+    });
+  }
+
+  $("past-toggle").addEventListener("click", () => {
+    const open = document.querySelector(".rot").classList.toggle("show-past");
+    $("past-toggle").textContent = open ? "Hide past weeks" : "Show past weeks";
+  });
+
+  // Flower confetti: a burst of little blooms from the box that was just checked
+  function flowerConfetti(x, y) {
+    let reduce = false;
+    try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+    const css = getComputedStyle(document.documentElement);
+    const colors = ["--p0", "--p1", "--p2", "--p3", "--p4", "--accent"].map((v) => css.getPropertyValue(v).trim() || "#F4A6BF");
+    const center = css.getPropertyValue("--center").trim() || "#F8DC85";
+
+    const canvas = document.createElement("canvas");
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
+    canvas.setAttribute("aria-hidden", "true");
+    Object.assign(canvas.style, { position: "fixed", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "50" });
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+
+    const count = reduce ? 8 : 34;
+    const parts = Array.from({ length: count }, () => {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.3;
+      const speed = reduce ? 0 : 4 + Math.random() * 6;
+      return {
+        x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+        size: 5 + Math.random() * 6, rot: Math.random() * Math.PI, spin: (Math.random() - 0.5) * 0.25,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        ox: reduce ? (Math.random() - 0.5) * 60 : 0, oy: reduce ? (Math.random() - 0.5) * 40 : 0,
+      };
+    });
+
+    const drawBloom = (p, alpha) => {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x + p.ox, p.y + p.oy);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      for (let k = 0; k < 5; k++) {
+        const a = (k / 5) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * p.size * 0.55, Math.sin(a) * p.size * 0.55, p.size * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = center;
+      ctx.beginPath();
+      ctx.arc(0, 0, p.size * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const duration = reduce ? 700 : 1600;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = (now - start) / duration;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      if (t >= 1) { canvas.remove(); return; }
+      parts.forEach((p) => {
+        p.vy += 0.22; p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx; p.y += p.vy; p.rot += p.spin;
+        drawBloom(p, t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4);
+      });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  document.addEventListener("change", (ev) => {
+    const el = ev.target;
+    if (el.id === "me-select") {
+      me = el.value;
+      try { me ? localStorage.setItem("chore-me", me) : localStorage.removeItem("chore-me"); } catch (e) {}
+      sync();
+      return;
+    }
+    if (el.dataset && el.dataset.scope) {
+      if (el.checked) {
+        const r = el.getBoundingClientRect();
+        flowerConfetti(r.left + r.width / 2, r.top + r.height / 2);
+      }
+      write(el.dataset.scope, el.dataset.key, el.checked);
+    }
+  });
+
+  // Roll over at midnight (and into a new week after Sunday night) without a reload
+  setInterval(() => {
+    const next = computeDates();
+    if (next.today !== cur.today) {
+      const weekChanged = next.weekStart !== cur.weekStart;
+      cur = next;
+      state.day = {};
+      if (weekChanged) state.week = {};
+      build();
+      subscribe();
+    }
+  }, 60000);
+
+  cur = computeDates();
+  build();
+
+  const cfg = window.FIREBASE_CONFIG;
+  if (!window.firebase || !cfg || !cfg.projectId || /^PASTE/.test(cfg.projectId)) {
+    showNotice("Checkmarks aren't shared yet: add your Firebase settings to firebase-config.js (see README).");
+  } else {
+    try {
+      firebase.initializeApp(cfg);
+      db = firebase.firestore();
+      subscribe();
+    } catch (e) {
+      showNotice("Couldn't connect to the database. Double-check firebase-config.js.");
+    }
+  }
+})();
+</script>
+</body>
+</html>
