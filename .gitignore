@@ -1,0 +1,5 @@
+.env
+# Generated from .env (locally) or the FIREBASE_API_KEY secret (GitHub Actions)
+firebase-config.js
+_site/
+.DS_Store
